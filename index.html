@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAI - Ninjago Advancement Institute</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Orbitron', 'JetBrains Mono', 'Courier New', monospace;
+      background: #ffffff;
+      color: #333333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* ASCII Brain Background */
+    .earth-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      opacity: 0.15;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      white-space: pre;
+      color: #000;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      line-height: 1;
+    }
+    
+    .brain-pattern {
+      text-align: center;
+      transform: scale(0.8);
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 60px 0;
+    }
+    
+    .logo {
+      font-size: 48px;
+      font-weight: 900;
+      font-family: 'Orbitron', monospace;
+      color: #000;
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    
+    .tagline {
+      font-size: 18px;
+      color: #666;
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      color: #999;
+      font-weight: 400;
+      font-family: 'JetBrains Mono', monospace;
+      max-width: 500px;
+      margin: 0 auto 40px auto;
+    }
+    
+    .section {
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    
+    .section.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .section.animate li {
+      animation: typewriter 0.6s ease-out forwards;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    
+    .section.animate li:nth-child(1) { animation-delay: 0.1s; }
+    .section.animate li:nth-child(2) { animation-delay: 0.2s; }
+    .section.animate li:nth-child(3) { animation-delay: 0.3s; }
+    .section.animate li:nth-child(4) { animation-delay: 0.4s; }
+    .section.animate li:nth-child(5) { animation-delay: 0.5s; }
+    .section.animate li:nth-child(6) { animation-delay: 0.6s; }
+    
+    @keyframes typewriter {
+      from { 
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'Orbitron', monospace;
+      color: #000;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    
+    .projects-header {
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+    
+    .projects-header:hover {
+      color: #333;
+      transform: scale(1.02);
+    }
+    
+    .projects-header::after {
+      content: " ▼";
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+    
+    .projects-header.expanded::after {
+      transform: rotate(180deg);
+    }
+    
+    .project-info {
+      background: #f8f8f8;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #555;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+    
+    .project-info.show {
+      max-height: 300px;
+      opacity: 1;
+      margin: 15px 0 25px 0;
+    }
+    
+    p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 16px;
+      font-weight: 300;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    li {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 12px;
+      padding-left: 20px;
+      position: relative;
+      font-weight: 300;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.5;
+      white-space: normal;
+    }
+    
+    .project-item {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      border-bottom: 2px dotted #999;
+      transition: all 0.3s ease;
+      background: linear-gradient(45deg, transparent 49%, #00ff0020 50%, transparent 51%);
+      background-size: 20px 20px;
+      animation: subtle-pulse 3s ease-in-out infinite;
+    }
+    
+    .project-item:hover {
+      color: #000;
+      border-bottom-color: #00ff00;
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px rgba(0,255,0,0.3);
+      background: linear-gradient(45deg, transparent 49%, #00ff0040 50%, transparent 51%);
+      animation: data-flow 0.5s ease-in-out;
+    }
+    
+    @keyframes subtle-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    
+    @keyframes data-flow {
+      0% { background-position: 0 0; }
+      100% { background-position: 20px 20px; }
+    }
+    
+    .project-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: #00ff00;
+      padding: 20px;
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.4;
+      width: 320px;
+      box-shadow: 
+        0 0 20px rgba(0,255,0,0.2),
+        0 8px 32px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 1000;
+      border: 1px solid #00ff00;
+      backdrop-filter: blur(10px);
+    }
+    
+    .project-tooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 10px solid transparent;
+      border-top-color: #00ff00;
+      filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3));
+    }
+    
+    .project-tooltip::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #00ff00, #00aa00, #00ff00);
+      border-radius: 12px;
+      z-index: -1;
+      opacity: 0;
+      animation: border-glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes border-glow {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+    
+    .project-item:hover .project-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(-15px) scale(1.02);
+    }
+    
+    .project-item:hover .project-tooltip::after {
+      opacity: 0.6;
+    }
+    
+    .tooltip-header {
+      color: #00ff00;
+      font-weight: bold;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-align: center;
+      padding: 8px;
+      background: rgba(0,255,0,0.1);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tooltip-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: scan-line 2s ease-in-out infinite;
+    }
+    
+    @keyframes scan-line {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .tooltip-stats {
+      background: linear-gradient(135deg, #0a0a0a 0%, #000000 100%);
+      padding: 12px;
+      margin: 10px 0;
+      border-left: 4px solid #00ff00;
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tooltip-stats::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #00ff00, transparent);
+      animation: progress-bar 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes progress-bar {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00ff00;
+      margin-right: 8px;
+      animation: status-blink 1.5s ease-in-out infinite;
+      box-shadow: 0 0 10px #00ff00;
+    }
+    
+    @keyframes status-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    
+    li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #999;
+    }
+    
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .team-member {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .member-name {
+      font-size: 16px;
+      font-weight: 400;
+      color: #000;
+      margin-bottom: 8px;
+    }
+    
+    .member-role {
+      font-size: 14px;
+      color: #999;
+      font-weight: 300;
+    }
+    
+    .achievements {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .achievement {
+      background: #f8f8f8;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #666;
+      font-weight: 300;
+    }
+    
+    .email-section {
+      text-align: center;
+      background: #f8f8f8;
+      padding: 40px;
+      margin: 60px 0;
+    }
+    
+    .email-form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .email-input {
+      padding: 12px 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 250px;
+      outline: none;
+      font-weight: 300;
+    }
+    
+    .email-input:focus {
+      border-color: #999;
+    }
+    
+    .submit-btn {
+      padding: 12px 24px;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 300;
+      transition: background 0.2s;
+    }
+    
+    .submit-btn:hover {
+      background: #333;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid #eee;
+      color: #999;
+      font-size: 14px;
+      font-weight: 300;
+    }
+    
+    a {
+      color: #666;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s;
+    }
+    
+    a:hover {
+      border-bottom-color: #666;
+    }
+    
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 36px;
+      }
+      .email-form {
+        flex-direction: column;
+        align-items: center;
+      }
+      .email-input {
+        min-width: 80%;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="earth-animation">
+    <div class="brain-pattern">                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░
+                    ░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░
+                    ░░░░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░
+                    ░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░
+                    ░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░
+                    ▓▓▓▓▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░
+                    ▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓██▓▓▓▓▓▓▓▓████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓█▓▓▓▓▓▓▓▓████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    █▓▓▓▓▓▓▓██████████████████████████████████████████████████████████████▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓████████████▓▓▓▓▓▓▓▓▓▓██████████████▓▓▓▓▓▓▓▓▓▓████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████▓▓▓▓▓▓▓▓▓▓▓▓▓████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓██████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████▓▓▓▓▓▓▓▓▓▓▓▓▓████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████▓▓▓▓▓▓▓▓▓▓▓▓▓████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ███████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ██████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    █████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████████▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████▓▓▓▓▓▓▓▓▓▓▓▓
+                    ███████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████▓▓▓▓▓▓▓▓▓▓▓▓
+                    ██████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████▓▓▓▓▓▓▓▓▓▓▓
+                    █████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████▓▓▓▓▓▓▓▓▓▓
+                    ████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓▓▓▓▓▓▓▓
+                    ███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▓▓▓▓▓▓
+                    ██████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓▓▓▓▓▓
+                    █████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓
+                    ████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    █▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓▓▓
+                    ▓▓▓▓▓▓
+                    ▓▓▓▓
+                    ▓▓
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</div>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="logo">NAI</div>
+      <div class="tagline">Ninjago Advancement Institute</div>
+      <div class="subtitle">Building machine learning models to advance the ancient arts of Ninjago through modern computational intelligence and data-driven innovation.</div>
+    </div>
+
+    <div class="section">
+      <h2>Our Research</h2>
+      <p>We develop cutting-edge machine learning models and AI systems to enhance traditional Ninjago practices. Our interdisciplinary approach combines ancient wisdom with modern computational methods to create breakthrough technologies for elemental mastery and combat optimization.</p>
+    </div>
+
+    <div class="section">
+      <h2 class="projects-header" onclick="toggleProjectInfo()">Current Projects</h2>
+      <div class="project-info" id="projectInfo">
+        <strong>Advanced Research Initiative Status:</strong><br><br>
+        Our current portfolio represents the pinnacle of interdisciplinary research, combining quantum computing, advanced AI architectures, and ancient Ninjago wisdom. Each project operates on cutting-edge infrastructure with real-time data processing capabilities, featuring distributed computing clusters and neural network ensembles that push the boundaries of what's possible in elemental mastery and combat optimization.<br><br>
+        <strong>Technical Specifications:</strong> Multi-GPU tensor processing, quantum-classical hybrid algorithms, temporal pattern recognition, and biometric authentication protocols with 99.97% uptime across all systems.
+      </div>
+      <ul>
+        <li><strong><span class="project-item">Quantum-Enhanced Spinjitzu Matrix
+          <div class="project-tooltip">
+            <div class="tooltip-header">Project Overview</div>
+            <strong>Technology Stack:</strong> TensorFlow Quantum, Python, CUDA<br>
+            <strong>Hardware:</strong> NVIDIA A100 GPUs + IBM Quantum Simulator<br>
+            <strong>Dataset:</strong> 50,000 motion capture sequences<br>
+            <div class="tooltip-stats">
+              <strong>Current Metrics:</strong><br>
+              • Model Accuracy: 87.2%<br>
+              • Training Time: 240 hours<br>
+              • Parameters: 2.1M<br>
+              • Inference Speed: 15ms
+            </div>
+            <span class="status-indicator"></span><strong>Status:</strong> In Development - Phase 2 Testing
+          </div>
+        </span></strong></li>
+        
+        <li><strong><span class="project-item">Neural Elemental Synthesis Engine
+          <div class="project-tooltip">
+            <div class="tooltip-header">AI Research Project</div>
+            <strong>Framework:</strong> PyTorch, Transformers, Hugging Face<br>
+            <strong>Model Type:</strong> Custom BERT variant with 110M parameters<br>
+            <strong>Training Data:</strong> 500GB text corpus + visual datasets<br>
+            <div class="tooltip-stats">
+              <strong>Performance Stats:</strong><br>
+              • Classification Accuracy: 82.4%<br>
+              • Training Epochs: 150<br>
+              • Batch Size: 32<br>
+              • Learning Rate: 2e-5
+            </div>
+            <span class="status-indicator"></span><strong>Status:</strong> Active Training - Epoch 127/150
+          </div>
+        </span></strong></li>
+        
+        <li><strong><span class="project-item">Autonomous Combat Intelligence Grid
+          <div class="project-tooltip">
+            <div class="tooltip-header">Multi-Agent System</div>
+            <strong>Algorithm:</strong> PPO Reinforcement Learning<br>
+            <strong>Environment:</strong> Unity ML-Agents, Python<br>
+            <strong>Agents:</strong> 64 concurrent training instances<br>
+            <div class="tooltip-stats">
+              <strong>Training Progress:</strong><br>
+              • Episodes Completed: 2.8M<br>
+              • Average Reward: 127.3<br>
+              • Win Rate: 73.6%<br>
+              • Training Hours: 480+
+            </div>
+            <span class="status-indicator"></span><strong>Status:</strong> Continuous Learning Active
+          </div>
+        </span></strong></li>
+        
+        <li><strong><span class="project-item">Temporal Ancient Language Decoder
+          <div class="project-tooltip">
+            <div class="tooltip-header">NLP Research</div>
+            <strong>Base Model:</strong> GPT-3.5 fine-tuned with LoRA<br>
+            <strong>Languages:</strong> 12 constructed languages + variants<br>
+            <strong>Corpus Size:</strong> 2.3M tokens across historical texts<br>
+            <div class="tooltip-stats">
+              <strong>Model Performance:</strong><br>
+              • BLEU Score: 0.67<br>
+              • Perplexity: 23.8<br>
+              • Translation Accuracy: 78.9%<br>
+              • Fine-tuning Steps: 50K
+            </div>
+            <span class="status-indicator"></span><strong>Status:</strong> Model Deployed - API Available
+          </div>
+        </span></strong></li>
+        
+        <li><strong><span class="project-item">Hyperspace Threat Prediction Array
+          <div class="project-tooltip">
+            <div class="tooltip-header">Computer Vision System</div>
+            <strong>Architecture:</strong> YOLOv8 + custom CNN layers<br>
+            <strong>Framework:</strong> OpenCV, PyTorch, FastAPI<br>
+            <strong>Dataset:</strong> 100K annotated images, 500 video hours<br>
+            <div class="tooltip-stats">
+              <strong>Detection Metrics:</strong><br>
+              • mAP@0.5: 0.843<br>
+              • Inference Time: 12ms<br>
+              • False Positive Rate: 3.2%<br>
+              • Model Size: 47MB
+            </div>
+            <span class="status-indicator"></span><strong>Status:</strong> Production Ready - v2.1.0
+          </div>
+        </span></strong></li>
+        
+        <li><strong><span class="project-item">Biometric Elemental Authentication System
+          <div class="project-tooltip">
+            <div class="tooltip-header">Security Framework</div>
+            <strong>Technology:</strong> Face Recognition + Voice Analysis<br>
+            <strong>Libraries:</strong> dlib, scikit-learn, librosa<br>
+            <strong>Database:</strong> PostgreSQL with 25K user profiles<br>
+            <div class="tooltip-stats">
+              <strong>Security Metrics:</strong><br>
+              • Authentication Accuracy: 96.7%<br>
+              • False Accept Rate: 0.001%<br>
+              • Response Time: 890ms<br>
+              • Uptime: 99.94%
+            </div>
+            <span class="status-indicator"></span><strong>Status:</strong> Live System - 24/7 Monitoring
+          </div>
+        </span></strong></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Recent Achievements</h2>
+    
+      <p>Our research has directly impacted over 1,000 practitioners across Ninjago, with our machine learning models achieving 96% accuracy in elemental power prediction and 98% precision in combat strategy optimization. We've successfully trained models on over 500 combat scenarios while processing thousands of ancient texts to rediscover lost techniques, delivering high-accuracy results that have revolutionized traditional training methods.</p>
+    </div>
+
+    <div class="email-section">
+      <h2 style="color: #000; margin-bottom: 10px;">Join Our Research</h2>
+      <p style="color: #666; margin-bottom: 20px;">Interested in advancing Ninjago through machine learning? Leave your email to learn about research opportunities and collaboration.</p>
+      <div class="email-form">
+        <input type="email" class="email-input" placeholder="Enter your email">
+        <button class="submit-btn">Submit</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2025 Ninjago Advancement Institute. All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    // Toggle project information display
+    function toggleProjectInfo() {
+      const projectInfo = document.getElementById('projectInfo');
+      const header = document.querySelector('.projects-header');
+      
+      if (projectInfo.classList.contains('show')) {
+        projectInfo.classList.remove('show');
+        header.classList.remove('expanded');
+      } else {
+        projectInfo.classList.add('show');
+        header.classList.add('expanded');
+      }
+    }
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all sections for animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        observer.observe(section);
+      });
+    });
+  </script>
+</body>
+</html>
